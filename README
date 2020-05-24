@@ -1,0 +1,4 @@
+In order to setup this project you should have installed node, and npm.
+
+- `npm i` 
+- Update the .env.foo file in the project root covering your data and rename it to .env.
