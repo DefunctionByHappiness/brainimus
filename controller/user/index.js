@@ -80,7 +80,7 @@ router.post('/login', function(req, res, next) {
       userId: userId.id.toString(),
       role: userId.role
     }
-    return res.status(200).send('Welcome!');
+    return res.status(200).send({username, role: userId.role});
   })();
 });
 

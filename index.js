@@ -1,6 +1,7 @@
 require('module-alias/register')
 const express = require('express');
 const dotenv = require('dotenv');
+var cors = require('cors')
 
 const user = require('@controller/user/index');
 
@@ -11,6 +12,8 @@ const app = express();
 app.get('/', (req, res) => {
     res.send('Hello World, from express');
 });
+
+app.use(cors())
 
 var bodyParser = require('body-parser')
 app.use(bodyParser.json());
