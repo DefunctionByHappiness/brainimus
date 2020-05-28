@@ -60,7 +60,12 @@ function createUser(user){
   return (async () => {
     try {
       const createdUser = await User.create(user);
-      return { username: createdUser.username };
+      return { 
+        username: createdUser.username,
+        id: createdUser.id,
+        role: createdUser.role 
+      
+      };
     } catch (err) {
       console.error('Mongo error', err);
       return ({error: err});

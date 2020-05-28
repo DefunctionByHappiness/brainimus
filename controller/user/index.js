@@ -5,13 +5,13 @@ const userModel = require('@model/user/user.model');
 const { requiresAuth } = require('@middlewares/authMiddleware');
 
 // POST /user/ Create
-router.post('/', requiresAuth, function (req, res, next) {
+router.post('/', function (req, res, next) {
   return (async () => {
-    if (req.session.user.role != "admin") return res.status(403).send('Unauthorized for this task');
     const userToCreate = req.body;
     const user = await userModel.createUser(userToCreate);
-    if (user.error) return res.status(500).send(user.error.message);
-    return res.status(201).send(user);
+    if (user.error) return res.status(409).send(user.error.message);
+    req.session.user = await authToSession(req.session, user.id.toString(), user.role);
+    return res.status(201).send({ username: user.username, role: user.role });
   })();
 });
 
@@ -75,11 +75,8 @@ router.post('/login', function(req, res, next) {
   return (async () => {
     const {username, password} = req.body;
     const userId = await userModel.auth({username, password});
-    if (!userId || userId.error) return res.status(500).send("Failed Auth");
-    req.session.user = {
-      userId: userId.id.toString(),
-      role: userId.role
-    }
+    if (!userId || userId.error) return res.status(401).send("Failed Auth");
+    req.session.user = await authToSession(req.session, userId.id.toString(), userId.role);
     return res.status(200).send({username, role: userId.role});
   })();
 });
@@ -89,14 +86,23 @@ router.get('/logout', function(req, res, next) {
   return (async () => {
     if (req.session) {
       // delete session object
-      const session = await req.session.destroy();
+      req.session.destroy();
       if(req.session) {
         return res.status(500).send("Failed LogOut");
       } else {
-        return res.send('Goodbye!');
+        return res.status(200).send({message: 'Bye!'});
       }
     }
   })();
 });
+
+function authToSession(session, user, role) {
+  return (async () => {
+    return session.user = {
+      userId: user,
+      role: role
+    }
+  })();
+}
 
 module.exports = router;
