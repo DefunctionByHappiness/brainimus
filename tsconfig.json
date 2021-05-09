@@ -20,6 +20,5 @@
     // "noImplicitThis": true,                /* Raise error on 'this' expressions with an implied 'any' type. */
     // "alwaysStrict": true,
   },
-  "include": ["src/**/*"],
-  "exclude": ["src/controller/user/*", "src/model/user/*"]
+  "include": ["src/**/*"]
 }
