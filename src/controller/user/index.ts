@@ -1,8 +1,10 @@
-import * as express from "express";
+/* tslint:disable:no-shadowed-variable */
+
+import express from "express";
 const router = express.Router();
 
-const userModel = require("@model/user/user.model");
-const { requiresAuth } = require("@middlewares/authMiddleware");
+import * as userModel from "../../model/user/user.model";
+import { requiresAuth } from "../../middlewares/authMiddleware";
 
 // POST /user/ Create
 router.post("/", function (req: any, res, next) {
@@ -22,7 +24,7 @@ router.post("/", function (req: any, res, next) {
 // GET /user/?username=id Get User by username
 router.get("/", requiresAuth, function (req: any, res, next) {
   return (async () => {
-    if (req.session.user.role != "admin")
+    if (req.session.user.role !== "admin")
       return res.status(403).send("Unauthorized for this task");
     const { username } = req.query;
     const user = await userModel.getUser(username);
@@ -38,7 +40,7 @@ router.get("/", requiresAuth, function (req: any, res, next) {
 // GET /user/all Get the user list
 router.get("/all", requiresAuth, function (req: any, res, next) {
   return (async () => {
-    if (req.session.user.role != "admin")
+    if (req.session.user.role !== "admin")
       return res.status(403).send("Unauthorized for this task");
     const users = await userModel.getUsers();
     if (!users) return res.status(404).send("User not found");
@@ -51,7 +53,7 @@ router.get("/all", requiresAuth, function (req: any, res, next) {
 // PUT /user/ Update User by username
 router.put("/", requiresAuth, function (req: any, res, next) {
   return (async () => {
-    if (req.session.user.role != "admin")
+    if (req.session.user.role !== "admin")
       return res.status(403).send("Unauthorized for this task");
     const userToUpdate = req.body;
     const { username } = req.query;
@@ -68,7 +70,7 @@ router.put("/", requiresAuth, function (req: any, res, next) {
 // DELETE /user/ Get User by username
 router.delete("/", requiresAuth, function (req: any, res, next) {
   return (async () => {
-    if (req.session.user.role != "admin")
+    if (req.session.user.role !== "admin")
       return res.status(403).send("Unauthorized for this task");
     const { username } = req.query;
     const user = await userModel.deleteUser(username);
